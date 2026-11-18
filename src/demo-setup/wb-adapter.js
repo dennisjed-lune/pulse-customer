@@ -5,6 +5,13 @@
    It runs before the wallet scripts. Data hooks: window.WB (read by the wallet's BANKS and progName),
    window.WB_DOM (read by brandLogo). Everything else is a text pass on the rendered screen. */
 (function () {
+  /* All offers filter (All, Card, Link, Promo code): works with or without a demo setup. */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-wbaf]');
+    if (!b) return;
+    e.stopPropagation(); window.__AF = b.getAttribute('data-wbaf');
+    if (window.__C && window.__C.renderHome) window.__C.renderHome();
+  }, true);
   var KEY = 'lune-oa-bank-v1';
   /* Bank colour look (18 Nov 2026): borders + light tint by default. ?look=none|border|tint|both changes it for the visit. */
   var lk = 'both';

@@ -103,6 +103,20 @@ patch("data-cx=\"points\">History</button>", "data-open=\"earnings\">Transaction
 # points: the pending balance matches the pending transactions (171.70 x 100 points)
 patch("const BAL = { available: 29680, pending: 4120 };", "const BAL = { available: 29680, pending: 17170 };")
 
+# 1d. Link and promo-code offers in All offers (18 Nov 2026): no separate "Shop via link" section. All offers has a
+#     filter (All, Card, Link, Promo code) and each link or promo offer carries a badge. wb-adapter.js handles the filter taps.
+patch("<span class=\"tag amber\">${I.link} Link</span>${shopBtn(o)}",
+      "${o.promo?`<span class=\"tag amber\">${I.tag} Promo code</span>`:`<span class=\"tag amber\">${I.link} Link</span>`}${shopBtn(o)}")
+patch("    ${links.length ? `<div class=\"cx-h\"><h2 data-req=\"CL-3.1\">Shop via link</h2>${tag('CL-3.1 OM-2.3 OM-4.1')}</div><div>${links.map((o) => C0.rowCard(o)).join('')}</div>` : ''}\n", "")
+patch("  const all = O.filter((o) => o.all && !isAff(o));",
+      "  const AF = window.__AF || 'all', kindOf = (o) => (o.promo ? 'promo' : isAff(o) ? 'link' : 'card');\n"
+      "  const allA = O.filter((o) => o.all), all = allA.filter((o) => AF === 'all' || kindOf(o) === AF);\n"
+      "  const afN = (k) => allA.filter((o) => k === 'all' || kindOf(o) === k).length;\n"
+      "  const afBar = `<div class=\"wb-af\" role=\"group\" aria-label=\"Offer type\">${[['all', 'All'], ['card', 'Card'], ['link', 'Link'], ['promo', 'Promo code']].filter(([k]) => afN(k)).map(([k, l]) => `<button type=\"button\" class=\"cx-chip\" data-wbaf=\"${k}\" aria-pressed=\"${AF === k}\">${l} ${afN(k)}</button>`).join('')}</div>`;")
+patch("<button class=\"btn-sm\" data-actall=\"all\" data-req=\"CL-5.1\">Activate all</button></div>\n    <div>${all.map((o) => C0.rowCard(of(o))).join('')}</div>",
+      "<button class=\"btn-sm\" data-actall=\"all\" data-req=\"CL-5.1\">Activate all</button></div>\n    ${afBar}<div>${all.map((o) => C0.rowCard(of(o))).join('')}</div>")
+patch('</head>', '<style>.wb-af{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:-4px 0 0}.wb-af::-webkit-scrollbar{display:none}.wb-af .cx-chip{flex:none}</style></head>')
+
 # 2. Hooks for the adapter
 patch("const BANKS = [['nova', 'Nova Bank', '#1c3d7a'],", "const BANKS = [window.WB ? ['nova', WB.bank, WB.color] : ['nova', 'Nova Bank', '#1c3d7a'],")
 patch("const progName = () => `${bankName()} ${isPoints() ? 'Points' : 'Cashback'}`;",
