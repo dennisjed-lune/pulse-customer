@@ -32,6 +32,16 @@ GRID = (".cx-mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));ga
         ".cx-mtile small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:15px;color:#6b7280}"
         ".cx-mtile > :last-child{margin-top:auto;max-width:100%;white-space:normal;text-align:left}")
 patch('</head>', '<style>' + GRID + '</style></head>')
+# Pitch mode hides the RFP tooltips, so their question-mark cursor goes too (18 Nov 2026).
+CURSOR = ('[data-req],.rid,.badge{cursor:inherit!important}'
+          'button[data-req],a[data-req],[data-req][data-cx],[data-req][data-offer],[data-req][data-open],[data-req][data-shop]{cursor:pointer!important}')
+# Bank colour looks: borders, light tint, or both (the default, set in wb-adapter.js). ?look=none shows the neutral look.
+LOOKS = ('html[data-look=border] .device,html[data-look=both] .device{--line:color-mix(in srgb,var(--bank) 40%,#fff)}'
+         'html[data-look=border] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=border] .cx-q,html[data-look=both] .cx-q{box-shadow:inset 0 0 0 1px var(--line)}'
+         'html[data-look=tint] .device,html[data-look=both] .device{--bg:color-mix(in srgb,var(--bank) 8%,#fff)}'
+         'html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 14%,#fff)}')
+patch('</head>', '<style>' + CURSOR + LOOKS + '</style></head>')
+
 
 # 2. Hooks for the adapter
 patch("const BANKS = [['nova', 'Nova Bank', '#1c3d7a'],", "const BANKS = [window.WB ? ['nova', WB.bank, WB.color] : ['nova', 'Nova Bank', '#1c3d7a'],")

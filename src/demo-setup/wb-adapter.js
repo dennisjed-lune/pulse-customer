@@ -6,6 +6,10 @@
    window.WB_DOM (read by brandLogo). Everything else is a text pass on the rendered screen. */
 (function () {
   var KEY = 'lune-oa-bank-v1';
+  /* Bank colour look (18 Nov 2026): borders + light tint by default. ?look=none|border|tint|both changes it for the visit. */
+  var lk = 'both';
+  try { var q = new URLSearchParams(location.search).get('look'); if (q) sessionStorage.setItem('wb-look', q); lk = sessionStorage.getItem('wb-look') || lk; } catch (e) {}
+  document.documentElement.setAttribute('data-look', lk);
   var cfg = null;
   try { cfg = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
   if (!cfg || !cfg.en) return;
