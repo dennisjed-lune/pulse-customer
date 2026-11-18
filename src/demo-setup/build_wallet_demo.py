@@ -38,7 +38,7 @@ CURSOR = ('[data-req],.rid,.badge{cursor:inherit!important}'
 # Bank colour looks: borders, light tint, or both (the default, set in wb-adapter.js). ?look=none shows the neutral look.
 LOOKS = ('html[data-look=border] .device,html[data-look=both] .device{--line:color-mix(in srgb,var(--bank) 40%,#fff)}'
          'html[data-look=border] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=border] .cx-q,html[data-look=both] .cx-q{box-shadow:inset 0 0 0 1px var(--line)}'
-         # the screen is white; wb-adapter.js wraps All offers in a tinted band
+         # the screen is white; wb-adapter.js wraps Expiring soon and All offers in tinted bands
          'html[data-look=tint] .device,html[data-look=both] .device{--bg:#fff}'
          'html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 10%,#fff)}'
          '.wb-sec{display:flex;flex-direction:column;gap:16px;margin:4px -18px;padding:20px 18px}'
@@ -46,6 +46,15 @@ LOOKS = ('html[data-look=border] .device,html[data-look=both] .device{--line:col
          '.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}')
 patch('</head>', '<style>' + CURSOR + LOOKS + '</style></head>')
 
+
+# 1b. Easier join (18 Nov 2026): the slide completes past 55% of the track, a tap anywhere on the track joins,
+#     and the hint says so. Before, the thumb had to reach the very end or it sprang back.
+patch("thumb.addEventListener('pointerup', () => { if (!down) return; down = false; if (max && x >= max - 4) { put(max); accept(); } else if (moved > 6) back(); });",
+      "thumb.addEventListener('pointerup', () => { if (!down) return; down = false; if (max && x >= max * 0.55) { thumb.style.transition = 'transform .15s'; fill.style.transition = 'width .15s'; put(max); setTimeout(accept, 140); } else if (moved > 6) back(); });\n"
+      "  track.addEventListener('click', (e) => { if (e.target === thumb || thumb.contains(e.target) || moved > 6) return; span(); thumb.style.transition = 'transform .2s'; fill.style.transition = 'width .2s'; put(max); setTimeout(accept, 180); });")
+patch("<p class=\"cx-en-hint\">Drag the button to the right. You can also press Enter on it.</p>", "<p class=\"cx-en-hint\">Slide or tap to accept the terms and join.</p>")
+patch(".cx-slide{position:relative;height:60px;border-radius:999px;", ".cx-slide{cursor:pointer;position:relative;height:60px;border-radius:999px;")
+patch(".cx-thumb{position:absolute;left:4px;top:4px;", ".cx-thumb{will-change:transform;position:absolute;left:4px;top:4px;")
 
 # 2. Hooks for the adapter
 patch("const BANKS = [['nova', 'Nova Bank', '#1c3d7a'],", "const BANKS = [window.WB ? ['nova', WB.bank, WB.color] : ['nova', 'Nova Bank', '#1c3d7a'],")

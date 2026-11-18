@@ -123,9 +123,10 @@
   }
   if (css) { var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); }
 
-  /* Section band (18 Nov 2026): the screen is white. On the Offers screen, All offers sits on a light bank tint,
-     full width, down to the bottom of the screen. The band holds its heading and everything up to the next heading. */
-  var BANDS = /^All offers/;
+  /* Section bands (18 Nov 2026): the screen is white. On the Offers screen, Expiring soon (with the collection below it)
+     and All offers sit on a light bank tint, full width; All offers runs to the bottom of the screen.
+     Each band holds its heading and everything up to the next heading. */
+  var BANDS = /^(Expiring soon|All offers)/;
   var band = function () {
     document.querySelectorAll('.cx-scr').forEach(function (scr) {
       [].slice.call(scr.children).forEach(function (h) {
