@@ -56,6 +56,53 @@ patch("<p class=\"cx-en-hint\">Drag the button to the right. You can also press 
 patch(".cx-slide{position:relative;height:60px;border-radius:999px;", ".cx-slide{cursor:pointer;position:relative;height:60px;border-radius:999px;")
 patch(".cx-thumb{position:absolute;left:4px;top:4px;", ".cx-thumb{will-change:transform;position:absolute;left:4px;top:4px;")
 
+# 1c. Transactions page (18 Nov 2026): the base demo's "My Earnings" sheet becomes "Transactions", with
+#     Pending and Received tabs, in cashback or points to match the programme. It opens from the balance at the
+#     top of every tab and from Rewards. Amounts are text ("AED 12.00" or "1,200 pts"), not the dirham symbol,
+#     so the demo setup's currency conversion reaches them.
+patch("const money=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});",
+      "const money=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});\n"
+      "const PTM=()=>!!(window.CEXT&&window.CEXT.mode&&window.CEXT.mode()!=='cashback');\n"
+      "const PU=()=>PTM()?'points':'cashback';\n"
+      "const RW=n=>PTM()?Math.round(n*100).toLocaleString('en-US')+' pts':'AED '+money(n);")
+def fn(name):
+    i = s.index('function ' + name + '(')
+    j = s.index('\nfunction ', i + 10)
+    return i, j
+def infn(name, pairs):
+    global s
+    i, j = fn(name); body = s[i:j]
+    for old, new, n in pairs:
+        assert body.count(old) == n, (name, old[:60], body.count(old))
+        body = body.replace(old, new)
+    s = s[:i] + body + s[j:]
+infn('earningsSheet', [
+    ("<h2>My Earnings</h2><p>Pending AED ${money(pendingTotal())} &nbsp;·&nbsp; Earned AED ${money(earnedTotal())}</p>",
+     "<h2>Transactions</h2><p>Pending ${RW(pendingTotal())} &nbsp;·&nbsp; Received ${RW(earnedTotal())}</p>", 1),
+    ("data-tab=\"earned\">Earned</button>", "data-tab=\"earned\">Received</button>", 1),
+    ("${tab==='pending'?'Pending':'Earned'} cashback</div>", "${tab==='pending'?'Pending':'Received'} ${PU()}</div>", 1),
+    ("${dirham()}${money(groupTotal(g.items))}", "${RW(groupTotal(g.items))}", 1),
+    ("${tab==='pending'?'On its way':'Total earned'}", "${tab==='pending'?'On its way':'Total received'}", 1),
+    ("<span>Merchant / Date</span><span>Cashback</span>", "<span>Merchant / Date</span><span>${PTM()?'Points':'Cashback'}</span>", 1),
+    ("${dirham()}${money(t.amt)}", "${RW(t.amt)}", 3),
+])
+infn('txSheet', [
+    ("`cashback payable from <b>${t.paidOn}</b>`", "`${PTM()?'Points':'Cashback'} received on <b>${t.paidOn}</b>`", 1),
+    ("`cashback reversed on <b>${t.revOn}</b>`", "`${PTM()?'Points':'Cashback'} reversed on <b>${t.revOn}</b>`", 1),
+    ("so this cashback was reversed.", "so the ${PU()} was reversed.", 1),
+    ("${dirham()}${money(t.amt)}", "${RW(t.amt)}", 1),
+])
+infn('linkTxSheet', [
+    ("`cashback credited on <b>${t.paidOn}</b>`", "`${PTM()?'Points':'Cashback'} received on <b>${t.paidOn}</b>`", 1),
+    ("${dirham()}${money(t.amt)}", "${RW(t.amt)}", 1),
+])
+# entry points: balance pill on every tab, Rewards (cashback and points)
+patch("`<button class=\"cx-bal\" data-cx=\"tab\" data-v=\"rewards\" data-req=", "`<button class=\"cx-bal\" data-open=\"earnings\" data-req=")
+patch("data-open=\"earnings\">Cashback history</button>", "data-open=\"earnings\">Transactions</button>")
+patch("data-cx=\"points\">History</button>", "data-open=\"earnings\">Transactions</button>")
+# points: the pending balance matches the pending transactions (171.70 x 100 points)
+patch("const BAL = { available: 29680, pending: 4120 };", "const BAL = { available: 29680, pending: 17170 };")
+
 # 2. Hooks for the adapter
 patch("const BANKS = [['nova', 'Nova Bank', '#1c3d7a'],", "const BANKS = [window.WB ? ['nova', WB.bank, WB.color] : ['nova', 'Nova Bank', '#1c3d7a'],")
 patch("const progName = () => `${bankName()} ${isPoints() ? 'Points' : 'Cashback'}`;",
