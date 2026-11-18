@@ -39,7 +39,11 @@ CURSOR = ('[data-req],.rid,.badge{cursor:inherit!important}'
 LOOKS = ('html[data-look=border] .device,html[data-look=both] .device{--line:color-mix(in srgb,var(--bank) 40%,#fff)}'
          'html[data-look=border] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=border] .cx-q,html[data-look=both] .cx-q{box-shadow:inset 0 0 0 1px var(--line)}'
          'html[data-look=tint] .device,html[data-look=both] .device{--bg:color-mix(in srgb,var(--bank) 8%,#fff)}'
-         'html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 14%,#fff)}')
+         'html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 14%,#fff)}'
+         # white bands between tinted sections (wb-adapter.js wraps Browse and All offers)
+         '.wb-sec{display:flex;flex-direction:column;gap:16px;margin:4px -18px;padding:20px 18px}'
+         'html[data-look=tint] .wb-sec,html[data-look=both] .wb-sec{background:#fff}'
+         '.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}')
 patch('</head>', '<style>' + CURSOR + LOOKS + '</style></head>')
 
 

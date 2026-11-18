@@ -123,11 +123,29 @@
   }
   if (css) { var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); }
 
+  /* White bands (18 Nov 2026): on the Offers screen, Browse and All offers sit on white, full width,
+     between the tinted sections. Each band holds its heading and everything up to the next heading. */
+  var BANDS = /^(Browse|All offers)/;
+  var band = function () {
+    document.querySelectorAll('.cx-scr').forEach(function (scr) {
+      [].slice.call(scr.children).forEach(function (h) {
+        if (!h.classList || !h.classList.contains('cx-h') || !BANDS.test((h.textContent || '').trim())) return;
+        var wrap = document.createElement('div'); wrap.className = 'wb-sec';
+        scr.insertBefore(wrap, h);
+        var n = h;
+        while (n && !(n !== h && n.classList && (n.classList.contains('cx-h') || n.classList.contains('wb-sec')))) { var nx = n.nextElementSibling; wrap.appendChild(n); n = nx; }
+        if (!wrap.nextElementSibling) wrap.classList.add('last');
+      });
+    });
+  };
+
   var start = function () {
+    band();
     walk(document.body);
     try { document.title = WB.bank + ' · Customer journey'; } catch (e) {}
     new MutationObserver(function (ms) {
       if (busy) return;
+      band();
       ms.forEach(function (m) {
         if (m.type === 'characterData') walk(m.target);
         else m.addedNodes.forEach(function (nd) { walk(nd); });
