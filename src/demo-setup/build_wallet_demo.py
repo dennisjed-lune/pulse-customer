@@ -43,7 +43,8 @@ LOOKS = ('html[data-look=border] .device,html[data-look=both] .device{--line:col
          # white bands between tinted sections (wb-adapter.js wraps Browse and All offers)
          '.wb-sec{display:flex;flex-direction:column;gap:16px;margin:4px -18px;padding:20px 18px}'
          'html[data-look=tint] .wb-sec,html[data-look=both] .wb-sec{background:#fff}'
-         '.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}')
+         '.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}'
+         '.wb-sec.top{margin:-58px -18px 4px;padding:58px 18px 20px}')
 patch('</head>', '<style>' + CURSOR + LOOKS + '</style></head>')
 
 
