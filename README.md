@@ -16,7 +16,9 @@ Each new visit opens the setup screen, filled in with the last bank. To change t
 
 My offers shows the offers as a grid, three in each row.
 
-The bank colour shows in the borders of cards and fields. The screen is white. On the Offers screen, All offers sits on a light bank tint. To compare looks, add `?look=none`, `?look=border` or `?look=tint` to the link.
+The bank colour shows in the borders of cards and fields. The screen is white. On the Offers screen, Expiring soon and All offers sit on a light bank tint.
+
+To join, slide the button past halfway, or tap anywhere on the slider. To compare looks, add `?look=none`, `?look=border` or `?look=tint` to the link.
 
 This is the pitch version. It does not show the internal RFP review marks. A script at the end of `index.html` (`id="pitch-mode"`) hides them.
 

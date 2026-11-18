@@ -2495,9 +2495,10 @@ window.LUNE_AIRLINES = (window.LUNE_AIRLINES || []).concat([
   }
   if (css) { var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); }
 
-  /* Section band (18 Nov 2026): the screen is white. On the Offers screen, All offers sits on a light bank tint,
-     full width, down to the bottom of the screen. The band holds its heading and everything up to the next heading. */
-  var BANDS = /^All offers/;
+  /* Section bands (18 Nov 2026): the screen is white. On the Offers screen, Expiring soon (with the collection below it)
+     and All offers sit on a light bank tint, full width; All offers runs to the bottom of the screen.
+     Each band holds its heading and everything up to the next heading. */
+  var BANDS = /^(Expiring soon|All offers)/;
   var band = function () {
     document.querySelectorAll('.cx-scr').forEach(function (scr) {
       [].slice.call(scr.children).forEach(function (h) {
@@ -3299,10 +3300,10 @@ body{background:#e9e9e4!important}
 .cx-terms h2{font-size:13px;font-weight:700;color:var(--ink);margin:0 0 6px}
 .cx-terms h3{font-size:12.5px;font-weight:700;color:var(--ink);margin:13px 0 3px}
 .cx-terms p{margin:0}
-.cx-slide{position:relative;height:60px;border-radius:999px;background:var(--tint);border:1px solid var(--tint2);overflow:hidden;touch-action:none;user-select:none;flex:none}
+.cx-slide{cursor:pointer;position:relative;height:60px;border-radius:999px;background:var(--tint);border:1px solid var(--tint2);overflow:hidden;touch-action:none;user-select:none;flex:none}
 .cx-slide .fill{position:absolute;left:0;top:0;bottom:0;width:56px;background:var(--bank);opacity:.13}
 .cx-slide .txt{position:absolute;inset:0 14px 0 60px;display:grid;place-items:center;font:700 14px var(--font);color:var(--bank);pointer-events:none;text-align:center}
-.cx-thumb{position:absolute;left:4px;top:4px;width:52px;height:52px;border-radius:50%;border:0;background:var(--bank);color:#fff;font:600 21px/1 var(--font);display:grid;place-items:center;cursor:grab;touch-action:none}
+.cx-thumb{will-change:transform;position:absolute;left:4px;top:4px;width:52px;height:52px;border-radius:50%;border:0;background:var(--bank);color:#fff;font:600 21px/1 var(--font);display:grid;place-items:center;cursor:grab;touch-action:none}
 .cx-thumb:active{cursor:grabbing}
 .cx-thumb:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .cx-en-hint{margin:0;font-size:12px;color:var(--ink-3);text-align:center}
@@ -3578,7 +3579,7 @@ const enrolScreen = () => `<div class="cx-enrol">
   <div class="cx-terms" id="cx-terms" tabindex="0" role="region" aria-label="Programme terms" data-req="CL-1.17">${termsHtml()}</div>
   <div class="cx-slide" id="cx-slide" data-req="CL-1.4 CL-1.17 CL-1.7"><span class="fill"></span><span class="txt" id="cx-slide-txt">Slide to accept and join</span>
     <button type="button" class="cx-thumb" id="cx-thumb" aria-label="Slide right to accept the terms and join. You can also press Enter.">&rarr;</button></div>
-  <p class="cx-en-hint">Drag the button to the right. You can also press Enter on it.</p>
+  <p class="cx-en-hint">Slide or tap to accept the terms and join.</p>
   <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">${tag('CL-1.4 CL-1.17')}</div>
 </div>`;
 const doneScreen = () => `<div class="cx-enrol cx-done">
@@ -3599,7 +3600,8 @@ const slideInit = () => {
   const span = () => { max = Math.max(0, track.clientWidth - thumb.offsetWidth - 8); return max; };
   thumb.addEventListener('pointerdown', (e) => { down = true; moved = 0; span(); startX = e.clientX - x; try { thumb.setPointerCapture(e.pointerId); } catch (err) {} });
   thumb.addEventListener('pointermove', (e) => { if (!down) return; const v = Math.max(0, Math.min(max, e.clientX - startX)); moved = Math.max(moved, v); put(v); });
-  thumb.addEventListener('pointerup', () => { if (!down) return; down = false; if (max && x >= max - 4) { put(max); accept(); } else if (moved > 6) back(); });
+  thumb.addEventListener('pointerup', () => { if (!down) return; down = false; if (max && x >= max * 0.55) { thumb.style.transition = 'transform .15s'; fill.style.transition = 'width .15s'; put(max); setTimeout(accept, 140); } else if (moved > 6) back(); });
+  track.addEventListener('click', (e) => { if (e.target === thumb || thumb.contains(e.target) || moved > 6) return; span(); thumb.style.transition = 'transform .2s'; fill.style.transition = 'width .2s'; put(max); setTimeout(accept, 180); });
   thumb.addEventListener('pointercancel', () => { if (!down) return; down = false; back(); });
   thumb.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if (moved > 6) { moved = 0; return; } accept(); });
   thumb.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); e.stopPropagation(); span(); put(max); accept(); } });
