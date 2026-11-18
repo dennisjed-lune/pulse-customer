@@ -117,6 +117,12 @@ patch("<button class=\"btn-sm\" data-actall=\"all\" data-req=\"CL-5.1\">Activate
       "<button class=\"btn-sm\" data-actall=\"all\" data-req=\"CL-5.1\">Activate all</button></div>\n    ${afBar}<div>${all.map((o) => C0.rowCard(of(o))).join('')}</div>")
 patch('</head>', '<style>.wb-af{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:-4px 0 0}.wb-af::-webkit-scrollbar{display:none}.wb-af .cx-chip{flex:none}</style></head>')
 
+# 1e. Link and promo-code offers in every programme (18 Nov 2026, Dennis): the 13 Nov build added them in Cashback only.
+#     In points programmes the link offer's rate shows in points; the promo code stays a discount.
+#     Long points rates ("5 pts per AED 1") wrap instead of being cut off.
+patch("[[AFF_ID, affOffer, MODE === 'cashback'], [PROMO_ID, promoOffer, MODE === 'cashback']]", "[[AFF_ID, affOffer, true], [PROMO_ID, promoOffer, true]]")
+patch('</head>', '<style>.row .pct{white-space:normal!important}</style></head>')
+
 # 2. Hooks for the adapter
 patch("const BANKS = [['nova', 'Nova Bank', '#1c3d7a'],", "const BANKS = [window.WB ? ['nova', WB.bank, WB.color] : ['nova', 'Nova Bank', '#1c3d7a'],")
 patch("const progName = () => `${bankName()} ${isPoints() ? 'Points' : 'Cashback'}`;",
