@@ -18,7 +18,7 @@ My offers shows the offers as a grid, three in each row.
 
 The bank colour shows in the borders of cards and fields. The screen is white. On the Offers screen, Expiring soon and All offers sit on a light bank tint.
 
-All offers includes the link and promo-code offers, each with a badge (Link, Promo code). A filter above the list shows All, Card, Link or Promo code.
+All offers includes the link and promo-code offers, each with a badge (Link, Promo code). A filter above the list shows All, Card, Link or Promo code. They show in every programme. In a points programme, the link offer's rate is in points and the promo code stays a discount.
 
 To join, slide the button past halfway, or tap anywhere on the slider.
 
