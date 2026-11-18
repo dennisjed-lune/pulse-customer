@@ -24,7 +24,9 @@
   var WB = window.WB = {
     bank: cfg.en,
     logo: cfg.logo || '',
-    color: cfg.color || '#1c3d7a',
+    /* Readable bank colour: a light brand colour (for example ADIB's light blue) is darkened, same hue, until white
+       text on it and the colour as text on white both pass 4.5:1. Dark brand colours stay as they are. */
+    color: (window.LuneSetup && window.LuneSetup.usableAccent) ? window.LuneSetup.usableAccent(cfg.color || '#1c3d7a') : (cfg.color || '#1c3d7a'),
     prog: cfg.rewards || '',
     credit: cfg.credit || '',
     unit: cfg.unit === 'points' ? 'points' : 'cashback',
