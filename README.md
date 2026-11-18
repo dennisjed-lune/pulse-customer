@@ -18,6 +18,8 @@ My offers shows the offers as a grid, three in each row.
 
 The bank colour shows in the borders of cards and fields. The screen is white. On the Offers screen, Expiring soon and All offers sit on a light bank tint.
 
+All offers includes the link and promo-code offers, each with a badge (Link, Promo code). A filter above the list shows All, Card, Link or Promo code.
+
 To join, slide the button past halfway, or tap anywhere on the slider.
 
 Transactions: tap the balance at the top of any tab, or Transactions on Rewards. The page has two tabs, Pending and Received. Amounts show as cashback or points, to match the programme, in the bank's currency. To compare looks, add `?look=none`, `?look=border` or `?look=tint` to the link.

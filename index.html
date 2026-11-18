@@ -314,7 +314,7 @@
 
   @media (max-width:720px){body{padding:0}.device{border-radius:0;height:100vh;width:100%;box-shadow:none}}
 .feat .fdays{position:absolute;top:14px;right:14px;z-index:2;padding:4px 10px;border-radius:999px;background:rgba(16,16,16,.72);color:#fff;font:700 12px/1.2 system-ui,sans-serif}.cat .cn{display:block;font-size:11px;color:#7c8186;font-weight:500;margin-top:-2px}</style>
-<style>.cx-mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.cx-mtile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;padding:10px;border:1px solid var(--border,#e5e7eb);border-radius:12px;background:var(--card,#fff);text-align:left;cursor:pointer;font:inherit;color:inherit}.cx-mtile[data-noop]{cursor:default;opacity:.7}.cx-mtile .cx-lg{width:36px;height:36px;margin-bottom:2px}.cx-mtile b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:17px;font-weight:600;word-break:break-word}.cx-mtile .cx-mrate{font-size:12px;line-height:16px;font-weight:700;color:var(--bank)}.cx-mtile small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:15px;color:#6b7280}.cx-mtile > :last-child{margin-top:auto;max-width:100%;white-space:normal;text-align:left}</style><style>[data-req],.rid,.badge{cursor:inherit!important}button[data-req],a[data-req],[data-req][data-cx],[data-req][data-offer],[data-req][data-open],[data-req][data-shop]{cursor:pointer!important}html[data-look=border] .device,html[data-look=both] .device{--line:color-mix(in srgb,var(--bank) 40%,#fff)}html[data-look=border] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=border] .cx-q,html[data-look=both] .cx-q{box-shadow:inset 0 0 0 1px var(--line)}html[data-look=tint] .device,html[data-look=both] .device{--bg:#fff}html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 10%,#fff)}.wb-sec{display:flex;flex-direction:column;gap:16px;margin:4px -18px;padding:20px 18px}html[data-look=tint] .wb-sec,html[data-look=both] .wb-sec{background:color-mix(in srgb,var(--bank) 8%,#fff)}.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}</style></head>
+<style>.cx-mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.cx-mtile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;padding:10px;border:1px solid var(--border,#e5e7eb);border-radius:12px;background:var(--card,#fff);text-align:left;cursor:pointer;font:inherit;color:inherit}.cx-mtile[data-noop]{cursor:default;opacity:.7}.cx-mtile .cx-lg{width:36px;height:36px;margin-bottom:2px}.cx-mtile b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:17px;font-weight:600;word-break:break-word}.cx-mtile .cx-mrate{font-size:12px;line-height:16px;font-weight:700;color:var(--bank)}.cx-mtile small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:15px;color:#6b7280}.cx-mtile > :last-child{margin-top:auto;max-width:100%;white-space:normal;text-align:left}</style><style>[data-req],.rid,.badge{cursor:inherit!important}button[data-req],a[data-req],[data-req][data-cx],[data-req][data-offer],[data-req][data-open],[data-req][data-shop]{cursor:pointer!important}html[data-look=border] .device,html[data-look=both] .device{--line:color-mix(in srgb,var(--bank) 40%,#fff)}html[data-look=border] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=border] .cx-q,html[data-look=both] .cx-q{box-shadow:inset 0 0 0 1px var(--line)}html[data-look=tint] .device,html[data-look=both] .device{--bg:#fff}html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 10%,#fff)}.wb-sec{display:flex;flex-direction:column;gap:16px;margin:4px -18px;padding:20px 18px}html[data-look=tint] .wb-sec,html[data-look=both] .wb-sec{background:color-mix(in srgb,var(--bank) 8%,#fff)}.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}</style><style>.wb-af{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:-4px 0 0}.wb-af::-webkit-scrollbar{display:none}.wb-af .cx-chip{flex:none}</style></head>
 <body>
 
 <div class="device" id="device">
@@ -2377,6 +2377,13 @@ window.LUNE_AIRLINES = (window.LUNE_AIRLINES || []).concat([
    It runs before the wallet scripts. Data hooks: window.WB (read by the wallet's BANKS and progName),
    window.WB_DOM (read by brandLogo). Everything else is a text pass on the rendered screen. */
 (function () {
+  /* All offers filter (All, Card, Link, Promo code): works with or without a demo setup. */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-wbaf]');
+    if (!b) return;
+    e.stopPropagation(); window.__AF = b.getAttribute('data-wbaf');
+    if (window.__C && window.__C.renderHome) window.__C.renderHome();
+  }, true);
   var KEY = 'lune-oa-bank-v1';
   /* Bank colour look (18 Nov 2026): borders + light tint by default. ?look=none|border|tint|both changes it for the visit. */
   var lk = 'both';
@@ -2761,7 +2768,7 @@ function tcard(o){
 function rowCard(o){
   if(isAff(o)) return `<div class="row" data-offer="${o.id}" role="button">${logo(o,'lg')}
     <div class="txt"><div class="name">${o.name}</div><div class="pct">${o.promo?o.benefit:'Up to '+o.pct+'% Cashback'}</div><div class="cap">${o.promo?'Online, with a promo code':'Online, through the offer link'}</div></div>
-    <div class="side"><span class="tag amber">${I.link} Link</span>${shopBtn(o)}</div></div>`;
+    <div class="side">${o.promo?`<span class="tag amber">${I.tag} Promo code</span>`:`<span class="tag amber">${I.link} Link</span>`}${shopBtn(o)}</div></div>`;
   return `<div class="row ${o.limit?'limit':''}" data-offer="${o.id}" role="button">${logo(o,'lg')}
     <div class="txt"><div class="name">${o.name}</div><div class="pct">${o.pct}% Cashback</div><div class="cap">${o.limit?`Max AED ${o.cap} cashback earned`:`Max cashback AED ${o.cap}`}</div></div>
     <div class="side">${daysTag(o)}${actBtn(o)}</div></div>`;
@@ -3449,7 +3456,10 @@ const offersTab = () => {
   const forYou = O.filter((o) => !isAff(o) && !o.prog).sort((a, b) => (a.rec || 99) - (b.rec || 99) || (a.activated - b.activated));
   const exp = O.filter((o) => o.expiring);
   const links = O.filter(isAff);
-  const all = O.filter((o) => o.all && !isAff(o));
+  const AF = window.__AF || 'all', kindOf = (o) => (o.promo ? 'promo' : isAff(o) ? 'link' : 'card');
+  const allA = O.filter((o) => o.all), all = allA.filter((o) => AF === 'all' || kindOf(o) === AF);
+  const afN = (k) => allA.filter((o) => k === 'all' || kindOf(o) === k).length;
+  const afBar = `<div class="wb-af" role="group" aria-label="Offer type">${[['all', 'All'], ['card', 'Card'], ['link', 'Link'], ['promo', 'Promo code']].filter(([k]) => afN(k)).map(([k, l]) => `<button type="button" class="cx-chip" data-wbaf="${k}" aria-pressed="${AF === k}">${l} ${afN(k)}</button>`).join('')}</div>`;
   const dining = O.filter((o) => o.cat === '10' && !o.prog);
   const cats = (C0.CATS || []).filter((c) => c.id !== 'all').map((c) => ({ ...c, n: O.filter((o) => o.cat === c.id && !o.prog).length })).filter((c) => c.n);
   return `<div class="cx-scr">${topHead('Offers')}
@@ -3464,9 +3474,8 @@ const offersTab = () => {
     <button class="cx-coll" data-cx="sheet" data-v="cx-coll" data-req="OM-6.2" style="background-image:url('${cover({ id: 'arabica' })}')"><span><b>Weekend dining</b><small>${dining.length} offers · collection</small></span><span>›</span></button>
     <div class="cx-h"><h2 data-req="CL-6.1">Browse</h2>${tag('CL-6.1 OM-6.2')}</div>
     <div class="cx-grid3">${cats.map((c) => `<button class="cx-tile" data-cat="${c.id}"><span class="ic">${(C0.CAT_ICON || {})[c.id] || ''}</span><span><b>${c.label}</b><small>${c.n} ${c.n === 1 ? 'offer' : 'offers'}</small></span></button>`).join('')}</div>
-    ${links.length ? `<div class="cx-h"><h2 data-req="CL-3.1">Shop via link</h2>${tag('CL-3.1 OM-2.3 OM-4.1')}</div><div>${links.map((o) => C0.rowCard(o)).join('')}</div>` : ''}
     <div class="cx-h"><h2 data-req="CL-6.1 CL-6.10">All offers</h2><button class="btn-sm" data-actall="all" data-req="CL-5.1">Activate all</button></div>
-    <div>${all.map((o) => C0.rowCard(of(o))).join('')}</div>
+    ${afBar}<div>${all.map((o) => C0.rowCard(of(o))).join('')}</div>
     <button class="view-all" data-open="cat:all" style="padding-bottom:8px">View all offers</button>
   </div>`;
 };
