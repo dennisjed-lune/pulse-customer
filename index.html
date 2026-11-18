@@ -2649,6 +2649,9 @@ const I={
 const CAT_ICON={all:I.grid,'10':I.food,'6':I.basket,'7':I.heart,'11':I.bagCat,'9':I.house,'15':I.plane,'4':I.giftCat,'14':I.car};
 const dirham=(cls='')=>`<svg class="dh ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 3.5h5.5a8.5 8.5 0 0 1 0 17H7z" stroke-width="2.6" stroke-linejoin="round"/><path d="M3.5 9.5h12M3.5 14.5h12" stroke-width="2.2"/></svg>`;
 const money=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const PTM=()=>!!(window.CEXT&&window.CEXT.mode&&window.CEXT.mode()!=='cashback');
+const PU=()=>PTM()?'points':'cashback';
+const RW=n=>PTM()?Math.round(n*100).toLocaleString('en-US')+' pts':'AED '+money(n);
 const esc=s=>s;
 
 /* ============================ state ============================ */
@@ -2902,8 +2905,8 @@ function activatedSheet(sh,cls){
 
 function earningsSheet(sh,cls){
   const tab=sh.tab||'pending'; const empty=S.scenario==='empty';
-  const head=`<div class="grab"></div><div class="s-head"><div><h2>My Earnings</h2><p>Pending AED ${money(pendingTotal())} &nbsp;·&nbsp; Earned AED ${money(earnedTotal())}</p></div><button class="xbtn" data-close>${I.x}</button></div>
-    <div style="padding:0 20px"><div class="seg"><button class="${tab==='pending'?'on':''}" data-tab="pending">Pending</button><button class="${tab==='earned'?'on':''}" data-tab="earned">Earned</button></div></div>`;
+  const head=`<div class="grab"></div><div class="s-head"><div><h2>Transactions</h2><p>Pending ${RW(pendingTotal())} &nbsp;·&nbsp; Received ${RW(earnedTotal())}</p></div><button class="xbtn" data-close>${I.x}</button></div>
+    <div style="padding:0 20px"><div class="seg"><button class="${tab==='pending'?'on':''}" data-tab="pending">Pending</button><button class="${tab==='earned'?'on':''}" data-tab="earned">Received</button></div></div>`;
   let body;
   if(sh.loading){
     body=`<div class="sk" style="width:180px;height:16px"></div><div style="display:flex;justify-content:space-between;margin-top:18px"><div class="sk" style="width:120px;height:12px"></div><div class="sk" style="width:60px;height:12px"></div></div>
@@ -2916,11 +2919,11 @@ function earningsSheet(sh,cls){
     const all=[...TX.pending,...TX.earned].flatMap(g=>g.items);
     const counts={all:all.length,card:all.filter(t=>t.mech==='card').length,aff:all.filter(t=>t.mech==='aff').length};
     const groups=TX[tab].map(g=>({...g,items:g.items.filter(t=>S.lane==='all'||t.mech===S.lane)})).filter(g=>g.items.length);
-    body=`<div style="margin:-6px 0 16px">${laneSeg(counts,true,'')}</div><div class="ear-h">${tab==='pending'?'Pending':'Earned'} cashback</div>`+(groups.length?groups.map(g=>`
-      <div class="mo"><div><b>${g.m}</b><span>${g.items.length} ${g.items.length===1?'transaction':'transactions'}</span></div><div class="r"><div class="amt">${dirham()}${money(groupTotal(g.items))}</div><span>${tab==='pending'?'On its way':'Total earned'}</span></div></div>
-      <div class="colh"><span>Merchant / Date</span><span>Cashback</span></div>
+    body=`<div style="margin:-6px 0 16px">${laneSeg(counts,true,'')}</div><div class="ear-h">${tab==='pending'?'Pending':'Received'} ${PU()}</div>`+(groups.length?groups.map(g=>`
+      <div class="mo"><div><b>${g.m}</b><span>${g.items.length} ${g.items.length===1?'transaction':'transactions'}</span></div><div class="r"><div class="amt">${RW(groupTotal(g.items))}</div><span>${tab==='pending'?'On its way':'Total received'}</span></div></div>
+      <div class="colh"><span>Merchant / Date</span><span>${PTM()?'Points':'Cashback'}</span></div>
       ${g.items.map(t=>`<button class="tx" data-tx="${t.id}">${logo(t,'md')}<span><span class="n" style="display:block">${t.name}${t.mech==='aff'?` <span class="tag amber" style="padding:2px 7px;font-size:11px;vertical-align:1px">${I.link} Link</span>`:''}</span><span class="d" style="display:block">${t.date}</span></span>
-        ${t.status==='reversed'?`<span class="a rev"><span style="display:flex;align-items:center;gap:2px">${dirham()}${money(t.amt)}</span><small>Reversed</small></span>`:t.status==='declined'?`<span class="a dec"><span style="display:flex;align-items:center;gap:2px">${dirham()}${money(t.amt)}</span><small>Not paid</small></span>`:t.status==='tracking'?`<span class="a trk">Waiting for store</span>`:`<span class="a">${dirham()}${money(t.amt)}</span>`}</button>`).join('')}`).join(''):`<div class="empty" style="padding-top:30px"><div class="ico amber">${I.linkBig}</div><h3>Nothing here yet</h3><p>${S.lane==='aff'?'Link purchases show here once you tap through to a store from this app.':'Card cashback shows here once you pay with your linked card at an activated offer.'}</p></div>`);
+        ${t.status==='reversed'?`<span class="a rev"><span style="display:flex;align-items:center;gap:2px">${RW(t.amt)}</span><small>Reversed</small></span>`:t.status==='declined'?`<span class="a dec"><span style="display:flex;align-items:center;gap:2px">${RW(t.amt)}</span><small>Not paid</small></span>`:t.status==='tracking'?`<span class="a trk">Waiting for store</span>`:`<span class="a">${RW(t.amt)}</span>`}</button>`).join('')}`).join(''):`<div class="empty" style="padding-top:30px"><div class="ico amber">${I.linkBig}</div><h3>Nothing here yet</h3><p>${S.lane==='aff'?'Link purchases show here once you tap through to a store from this app.':'Card cashback shows here once you pay with your linked card at an activated offer.'}</p></div>`);
   }
   return `<div class="sheet ${cls}">${head}<div class="s-body">${body}</div></div>`;
 }
@@ -2930,14 +2933,14 @@ function txSheet(sh,cls){
   const t=findTx(sh.id);
   if(t.mech==='aff') return linkTxSheet(t,cls);
   const ico={pending:['orange',I.hourglass],paid:['green',I.checkBig],reversed:['red',I.xBig],late:['orange',I.clock]}[t.status];
-  const sub={pending:'Pending confirmation',paid:`cashback payable from <b>${t.paidOn}</b>`,reversed:`cashback reversed on <b>${t.revOn}</b>`,late:'Pending confirmation'}[t.status];
-  const banner=t.status==='reversed'?`<div class="banner error" style="margin-top:22px">${I.alert}<span>Refunded within the ${OFFERS.find(o=>o.domain===t.domain)?.hold||30}-day window, so this cashback was reversed.</span></div>`
+  const sub={pending:'Pending confirmation',paid:`${PTM()?'Points':'Cashback'} received on <b>${t.paidOn}</b>`,reversed:`${PTM()?'Points':'Cashback'} reversed on <b>${t.revOn}</b>`,late:'Pending confirmation'}[t.status];
+  const banner=t.status==='reversed'?`<div class="banner error" style="margin-top:22px">${I.alert}<span>Refunded within the ${OFFERS.find(o=>o.domain===t.domain)?.hold||30}-day window, so the ${PU()} was reversed.</span></div>`
     :'';
   const cta={pending:['soft','View Offer'],paid:['soft','View Offer'],reversed:['soft','View Offer'],late:['soft','View Offer']}[t.status];
   const offerId=OFFERS.find(o=>o.domain===t.domain)?.id;
   return `<div class="sheet ${cls}"><div class="grab"></div>
     <div class="s-head"><h2>Transaction details</h2><button class="xbtn" data-close>${I.x}</button></div>
-    <div class="s-body"><div class="txd"><div class="ico ${ico[0]}">${ico[1]}</div><div class="amt ${t.status==='reversed'?'rev':''}">${dirham()}${money(t.amt)}</div><div class="sub">${sub}</div></div>
+    <div class="s-body"><div class="txd"><div class="ico ${ico[0]}">${ico[1]}</div><div class="amt ${t.status==='reversed'?'rev':''}">${RW(t.amt)}</div><div class="sub">${sub}</div></div>
       ${banner}
       <div class="kvs">
         <div class="kv"><span class="k">Merchant</span><span class="v">${logo(t,'xs')}${t.name}</span></div>
@@ -2953,14 +2956,14 @@ function txSheet(sh,cls){
 function linkTxSheet(t,cls){
   const o=byId(t.offerId);
   const ico={tracking:['amber',I.linkBig],pending:['orange',I.hourglass],paid:['green',I.checkBig],declined:['red',I.xBig]}[t.status];
-  const sub={tracking:'Tapped through, waiting for the store',pending:'Pending store confirmation',paid:`cashback credited on <b>${t.paidOn}</b>`,declined:`declined by the store on <b>${t.decOn}</b>`}[t.status];
+  const sub={tracking:'Tapped through, waiting for the store',pending:'Pending store confirmation',paid:`${PTM()?'Points':'Cashback'} received on <b>${t.paidOn}</b>`,declined:`declined by the store on <b>${t.decOn}</b>`}[t.status];
   const banner={
     tracking:`<div class="banner info" style="margin-top:22px">${I.info}<span>Your tap was recorded. If you bought something, ${o.name} usually reports the order within two days, and it will show here as pending.</span></div>`,
     pending:`<div class="banner info" style="margin-top:22px">${I.info}<span>${o.name} reported the order. ${timingAff(o)}. The store approves about ${o.approve}% of orders.</span></div>`,
     paid:'',
     declined:`<div class="banner error" style="margin-top:22px">${I.alert}<span>${t.note}, so no cashback is paid. Nothing is deducted from cashback you have already been paid.</span></div>`}[t.status];
   const cta={tracking:'View offer',pending:'View offer',paid:'View offer',declined:'Get help'}[t.status];
-  const amt=t.status==='tracking'?`<div class="amt" style="color:var(--ink-3);font-size:22px">No order yet</div>`:`<div class="amt ${t.status==='declined'?'rev':''}">${dirham()}${money(t.amt)}</div>`;
+  const amt=t.status==='tracking'?`<div class="amt" style="color:var(--ink-3);font-size:22px">No order yet</div>`:`<div class="amt ${t.status==='declined'?'rev':''}">${RW(t.amt)}</div>`;
   return `<div class="sheet ${cls}"><div class="grab"></div>
     <div class="s-head"><h2>Transaction details</h2><button class="xbtn" data-close>${I.x}</button></div>
     <div class="s-body"><div class="txd"><div class="ico ${ico[0]}">${ico[1]}</div>${amt}<div class="sub">${sub}</div></div>
@@ -3315,7 +3318,7 @@ body{background:#e9e9e4!important}
 document.head.appendChild(css);
 
 /* ---------- sample loyalty data (Nova Bank) ---------- */
-const BAL = { available: 29680, pending: 4120 };
+const BAL = { available: 29680, pending: 17170 };
 const EXPIRY = [['31 Dec 2026', 1200], ['31 Mar 2027', 3400], ['30 Jun 2027', 5200], ['2 Nov 2027', 7500]];   // LAF-36, LAF-113, LAF-172
 const LOTS = [
   { m: 'Grandiose', d: '2 Nov 2026', p: 4000, st: 'Pending', exp: '2 Nov 2027', kind: 'Base' },
@@ -3422,7 +3425,7 @@ const nav = () => {
 const topHead = (title) => {
   const S = C2().S || {};
   const bal = S.loading || S.offline ? '' : isPoints() ? `${MODE === 'tiers' ? TIERS[ME.tier][0] + ' · ' : ''}${pts(BAL.available)}` : aed(C().earnedTotal());
-  return `<div class="cx-top"><h1>${title}</h1>${bal && TAB !== 'rewards' ? `<button class="cx-bal" data-cx="tab" data-v="rewards" data-req="CL-6.5 ${isPoints() ? 'LAF-111' : 'LAF-34'}"><i>N</i>${bal}</button>` : ''}</div>`;
+  return `<div class="cx-top"><h1>${title}</h1>${bal && TAB !== 'rewards' ? `<button class="cx-bal" data-open="earnings" data-req="CL-6.5 ${isPoints() ? 'LAF-111' : 'LAF-34'}"><i>N</i>${bal}</button>` : ''}</div>`;
 };
 const ocard = (o) => {
   const C0 = C(), st = (C0.S.activating || {})[o.id], act = o.activated;
@@ -3511,10 +3514,10 @@ const rewardsTab = () => {
     h += `<div class="cx-card cx-hero"><div class="cx-seg" role="group" aria-label="Period" style="margin:0">${[['month', 'This month'], ['year', 'Last 12 months']].map((p) => `<button data-cx="savp" data-v="${p[0]}" aria-pressed="${SAVP === p[0]}">${p[1]}</button>`).join('')}</div>
       <span class="lbl">Cashback ${SAVP === 'month' ? 'this month' : 'in the last 12 months'}</span><span class="cx-big">${aed(v.saved)}</span><p>${v.redeemed} offers redeemed · ${empty ? 0 : offers().filter((o) => o.activated && !o.auto).length} active</p>${tag('CL-6.21')}</div>
       <div class="cx-card"><div class="cx-row"><b>Payable</b><span>${aed(C0.earnedTotal())}</span></div><div class="cx-row"><b>Pending</b><span>${aed(C0.pendingTotal())}</span></div><p>Pending until the refund window of each purchase ends.</p>
-        <div class="cx-btns"><button class="cx-b" data-open="earnings">Cashback history</button></div>${tag('CL-6.5 LAF-34 LAF-120')}</div>`;
+        <div class="cx-btns"><button class="cx-b" data-open="earnings">Transactions</button></div>${tag('CL-6.5 LAF-34 LAF-120')}</div>`;
   } else {
     h += `<div class="cx-card cx-hero"><span class="lbl">Points balance</span><span class="cx-big">${pts(BAL.available)}</span><p>Worth AED ${(BAL.available / PTS).toFixed(2)} when you redeem. ${nf(PTS)} points = AED 1. ${pts(BAL.pending)} pending.</p>
-        <div class="cx-btns"><button class="cx-b pri" data-cx="redeem" data-req="LIT-11">Redeem points</button><button class="cx-b" data-cx="points">History</button></div>
+        <div class="cx-btns"><button class="cx-b pri" data-cx="redeem" data-req="LIT-11">Redeem points</button><button class="cx-b" data-open="earnings">Transactions</button></div>
         <div style="display:flex;flex-wrap:wrap;gap:6px">${tag('LAF-111 LAF-112 LAF-120')}${tag('LIT-11 LAF-116')}</div></div>
       <div class="cx-card"><h3 data-req="LAF-36">Points that expire</h3>${EXPIRY.map(([d, n]) => `<div class="cx-row"><span>${d}</span><b>${pts(n)}</b></div>`).join('')}${tag('LAF-36 LAF-113 LAF-172')}</div>`;
     if (MODE === 'tiers') h += tierCard();
