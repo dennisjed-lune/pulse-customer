@@ -6,7 +6,7 @@ Open `index.html` in a browser. The file is self-contained.
 ## Demo setup (18 Nov 2026)
 
 The demo starts with a setup screen: "Which bank are you pitching?". Only the Lune person sees it.
-- Pick a bank, or type a name and website. The logo comes from the website. The colour comes from the logo.
+- Pick a bank, or type a name and website. The logo comes from the website. The colour comes from the logo. A light colour is darkened (same hue) until text and buttons are easy to read.
 - The country sets the merchants, the airline and the ride app. The UAE keeps the RFP offer set.
 - The currency converts every amount. The rewards programme name and the credit card name replace the defaults.
 - "Rewards shown as" sets Cashback or Points. The font changes the wallet font.
