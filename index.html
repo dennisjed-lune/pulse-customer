@@ -314,7 +314,7 @@
 
   @media (max-width:720px){body{padding:0}.device{border-radius:0;height:100vh;width:100%;box-shadow:none}}
 .feat .fdays{position:absolute;top:14px;right:14px;z-index:2;padding:4px 10px;border-radius:999px;background:rgba(16,16,16,.72);color:#fff;font:700 12px/1.2 system-ui,sans-serif}.cat .cn{display:block;font-size:11px;color:#7c8186;font-weight:500;margin-top:-2px}</style>
-<style>.cx-mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.cx-mtile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;padding:10px;border:1px solid var(--border,#e5e7eb);border-radius:12px;background:var(--card,#fff);text-align:left;cursor:pointer;font:inherit;color:inherit}.cx-mtile[data-noop]{cursor:default;opacity:.7}.cx-mtile .cx-lg{width:36px;height:36px;margin-bottom:2px}.cx-mtile b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:17px;font-weight:600;word-break:break-word}.cx-mtile .cx-mrate{font-size:12px;line-height:16px;font-weight:700;color:var(--bank)}.cx-mtile small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:15px;color:#6b7280}.cx-mtile > :last-child{margin-top:auto;max-width:100%;white-space:normal;text-align:left}</style><style>[data-req],.rid,.badge{cursor:inherit!important}button[data-req],a[data-req],[data-req][data-cx],[data-req][data-offer],[data-req][data-open],[data-req][data-shop]{cursor:pointer!important}html[data-look=border] .device,html[data-look=both] .device{--line:color-mix(in srgb,var(--bank) 40%,#fff)}html[data-look=border] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=border] .cx-q,html[data-look=both] .cx-q{box-shadow:inset 0 0 0 1px var(--line)}html[data-look=tint] .device,html[data-look=both] .device{--bg:color-mix(in srgb,var(--bank) 8%,#fff)}html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 14%,#fff)}.wb-sec{display:flex;flex-direction:column;gap:16px;margin:4px -18px;padding:20px 18px}html[data-look=tint] .wb-sec,html[data-look=both] .wb-sec{background:#fff}.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}</style></head>
+<style>.cx-mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.cx-mtile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;padding:10px;border:1px solid var(--border,#e5e7eb);border-radius:12px;background:var(--card,#fff);text-align:left;cursor:pointer;font:inherit;color:inherit}.cx-mtile[data-noop]{cursor:default;opacity:.7}.cx-mtile .cx-lg{width:36px;height:36px;margin-bottom:2px}.cx-mtile b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:17px;font-weight:600;word-break:break-word}.cx-mtile .cx-mrate{font-size:12px;line-height:16px;font-weight:700;color:var(--bank)}.cx-mtile small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:15px;color:#6b7280}.cx-mtile > :last-child{margin-top:auto;max-width:100%;white-space:normal;text-align:left}</style><style>[data-req],.rid,.badge{cursor:inherit!important}button[data-req],a[data-req],[data-req][data-cx],[data-req][data-offer],[data-req][data-open],[data-req][data-shop]{cursor:pointer!important}html[data-look=border] .device,html[data-look=both] .device{--line:color-mix(in srgb,var(--bank) 40%,#fff)}html[data-look=border] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=border] .cx-q,html[data-look=both] .cx-q{box-shadow:inset 0 0 0 1px var(--line)}html[data-look=tint] .device,html[data-look=both] .device{--bg:color-mix(in srgb,var(--bank) 8%,#fff)}html[data-look=tint] .cx-tabs,html[data-look=both] .cx-tabs,html[data-look=tint] .cx-q,html[data-look=both] .cx-q{background:color-mix(in srgb,var(--bank) 14%,#fff)}.wb-sec{display:flex;flex-direction:column;gap:16px;margin:4px -18px;padding:20px 18px}html[data-look=tint] .wb-sec,html[data-look=both] .wb-sec{background:#fff}.wb-sec.last{margin-bottom:-112px;padding-bottom:132px}.wb-sec.top{margin:-58px -18px 4px;padding:58px 18px 20px}</style></head>
 <body>
 
 <div class="device" id="device">
@@ -2495,7 +2495,7 @@ window.LUNE_AIRLINES = (window.LUNE_AIRLINES || []).concat([
   }
   if (css) { var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); }
 
-  /* White bands (18 Nov 2026): on the Offers screen, Browse and All offers sit on white, full width,
+  /* White bands (18 Nov 2026): the header and, on the Offers screen, Browse and All offers sit on white, full width,
      between the tinted sections. Each band holds its heading and everything up to the next heading. */
   var BANDS = /^(Browse|All offers)/;
   var band = function () {
@@ -2508,6 +2508,14 @@ window.LUNE_AIRLINES = (window.LUNE_AIRLINES || []).concat([
         while (n && !(n !== h && n.classList && (n.classList.contains('cx-h') || n.classList.contains('wb-sec')))) { var nx = n.nextElementSibling; wrap.appendChild(n); n = nx; }
         if (!wrap.nextElementSibling) wrap.classList.add('last');
       });
+      /* The header (title, balance, search, active offers) also sits on white. The tint starts at the first section. */
+      var top = scr.firstElementChild;
+      if (top && top.classList.contains('cx-top') && scr.querySelector(':scope > .cx-h')) {
+        var hw = document.createElement('div'); hw.className = 'wb-sec top';
+        scr.insertBefore(hw, top);
+        var m = top;
+        while (m && !(m.classList && (m.classList.contains('cx-h') || m.classList.contains('wb-sec')))) { var mx = m.nextElementSibling; hw.appendChild(m); m = mx; }
+      }
     });
   };
 
