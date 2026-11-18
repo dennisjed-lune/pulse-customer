@@ -123,9 +123,10 @@
   }
   if (css) { var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); }
 
-  /* White bands (18 Nov 2026): the header and, on the Offers screen, Browse and All offers sit on white, full width,
-     between the tinted sections. Each band holds its heading and everything up to the next heading. */
-  var BANDS = /^(Browse|All offers)/;
+  /* Section bands (18 Nov 2026): the screen is white. On the Offers screen, Expiring soon (with the collection
+     below it) and Shop via link sit on a light bank tint, full width. Each band holds its heading and everything
+     up to the next heading. */
+  var BANDS = /^(Expiring soon|Shop via link)/;
   var band = function () {
     document.querySelectorAll('.cx-scr').forEach(function (scr) {
       [].slice.call(scr.children).forEach(function (h) {
@@ -134,16 +135,7 @@
         scr.insertBefore(wrap, h);
         var n = h;
         while (n && !(n !== h && n.classList && (n.classList.contains('cx-h') || n.classList.contains('wb-sec')))) { var nx = n.nextElementSibling; wrap.appendChild(n); n = nx; }
-        if (!wrap.nextElementSibling) wrap.classList.add('last');
       });
-      /* The header (title, balance, search, active offers) also sits on white. The tint starts at the first section. */
-      var top = scr.firstElementChild;
-      if (top && top.classList.contains('cx-top') && scr.querySelector(':scope > .cx-h')) {
-        var hw = document.createElement('div'); hw.className = 'wb-sec top';
-        scr.insertBefore(hw, top);
-        var m = top;
-        while (m && !(m.classList && (m.classList.contains('cx-h') || m.classList.contains('wb-sec')))) { var mx = m.nextElementSibling; hw.appendChild(m); m = mx; }
-      }
     });
   };
 
